@@ -1,0 +1,71 @@
+---
+title: "dtree"
+author: "Chen Yi"
+date: '2023-01-04'
+output:
+  html_document:
+    toc: yes
+    toc_depth: 4
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+# 准备工作
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = TRUE, fig.align = "center")
+```
+
+```{r}
+cat("\014");rm(list = ls())
+```
+
+```{r}
+setwd("D:/fd/yanr/machine learning/期终试题")
+library(ggplot2)
+library(reshape)
+library(dplyr)
+
+```
+
+```{r}
+library(rpart)
+library(tibble)
+library(bitops)
+library(rattle)
+library(rpart.plot)
+library(RColorBrewer)
+```
+
+```{r}
+library(readxl)
+data <- read_excel("customer.xlsx")
+head(data)
+```
+
+```{r}
+df <- data.frame(data)
+df_train <- df[1:13,]
+df_predict <- df[14,]
+```
+
+
+```{r}
+tree <- rpart(Buying~Age+Incoming+Student+Credit.Rating,data=df_train,minsplit = 1, minbucket = 2, cp = 0.00001)
+printcp(tree) 
+```
+
+```{r}
+fancyRpartPlot(tree)
+```
+
+```{r}
+pred <- predict(tree,df_predict)
+pred
+```
+通过决策树对年龄(50), 收入（Medium）,非学生，信用记录 (excellent)用户的行为进行预测，其购买的概率为0.875
+
